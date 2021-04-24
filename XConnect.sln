@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31220.234
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XConnect", "XConnect\XConnect.csproj", "{C25C7565-7E59-4E29-901D-5781D2DC3398}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XConnect.Test", "XConnect.Test\XConnect.Test.csproj", "{46035E6B-3CCB-4AF6-B344-4BC883055081}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C25C7565-7E59-4E29-901D-5781D2DC3398}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C25C7565-7E59-4E29-901D-5781D2DC3398}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C25C7565-7E59-4E29-901D-5781D2DC3398}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C25C7565-7E59-4E29-901D-5781D2DC3398}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46035E6B-3CCB-4AF6-B344-4BC883055081}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46035E6B-3CCB-4AF6-B344-4BC883055081}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46035E6B-3CCB-4AF6-B344-4BC883055081}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46035E6B-3CCB-4AF6-B344-4BC883055081}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CF4372D8-8F15-4F1E-85CB-316C0E9CE71A}
+	EndGlobalSection
+EndGlobal
