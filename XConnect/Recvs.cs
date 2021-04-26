@@ -72,4 +72,17 @@ namespace FlyByWireless.XConnect
             EastVelocity, UpVelocity, SouthVelocity,
             RollRate, PitchRate, YawRate;
     }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public readonly struct RadR
+    {
+        public readonly float Longitude, Latitude, PrecipPercent, StormTop;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    readonly struct DRef
+    {
+        public readonly int Id;
+        public readonly float Value;
+    }
 }
