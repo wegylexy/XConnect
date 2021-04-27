@@ -7,9 +7,14 @@ namespace FlyByWireless.XConnect
 {
     public enum ApplicationHostId
     {
-        Invalid,
+        Unknown,
         XPlane,
-        PlaneMaker
+        PlaneMaker,
+        WorldMaker,
+        Briefer,
+        PartMaker,
+        YoungsMod,
+        XAuto
     }
 
     public enum Role
