@@ -55,7 +55,7 @@ namespace FlyByWireless.XConnect
         readonly int _id;
         readonly string _path;
         readonly EventHandler<float> _received;
-        readonly ManualResetEvent _mres = new(true);
+        readonly ManualResetEventSlim _mres = new(true);
 
         internal DataRef(XConnect x, int id, string path, EventHandler<float> received) =>
             (XConnect, _id, _path, _received) = (x, id, path, received);
@@ -66,7 +66,8 @@ namespace FlyByWireless.XConnect
             get => _RRefPerSecond;
             set
             {
-                if (_RRefPerSecond != value)
+                var f = _RRefPerSecond;
+                if (f != value)
                 {
                     _mres.Set();
                     _ = Task.Run(async () =>
@@ -82,7 +83,7 @@ namespace FlyByWireless.XConnect
                             {
                                 var sent = await XConnect.Client.SendAsync(a, 413, XConnect.RemoteEndPoint).ConfigureAwait(false);
                                 Debug.Assert(sent == 413);
-                                if (_mres.WaitOne(1000 / value + 100))
+                                if (value != default ? _mres.Wait(TimeSpan.FromTicks(TimeSpan.TicksPerSecond / value + 100_0000)) : !_mres.Wait(TimeSpan.FromTicks(TimeSpan.TicksPerSecond / Math.Max(f, 5))))
                                 {
                                     break;
                                 }
@@ -102,7 +103,10 @@ namespace FlyByWireless.XConnect
         internal void Receive(float value)
         {
             _mres.Set();
-            _received.Invoke(this, value);
+            if (_RRefPerSecond != default)
+            {
+                _received.Invoke(this, value);
+            }
         }
     }
 
