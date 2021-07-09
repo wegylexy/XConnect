@@ -45,10 +45,18 @@ for (; ; )
                     6 => 1,
                     7 => 2,
                     _ => default
-                }}");
+                }} TX");
             }
         }, 5);
     }
+    x.RegisterDataRef("sim/cockpit2/radios/actuators/audio_selection_com1", (_, c) =>
+    {
+        Console.WriteLine($"{(c != 0 ? "Enabled" : "Disabled")} COM 1 RX");
+    }, 5);
+    x.RegisterDataRef("sim/cockpit2/radios/actuators/audio_selection_com2", (_, c) =>
+    {
+        Console.WriteLine($"{(c != 0 ? "Enabled" : "Disabled")} COM 2 RX");
+    }, 5);
     //await x.AlertAsync("Test");
     await tcs.Task;
 }

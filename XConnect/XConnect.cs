@@ -52,12 +52,13 @@ namespace FlyByWireless.XConnect
     public sealed class DataRef
     {
         public readonly XConnect XConnect;
-        readonly int Id;
-        readonly string Path;
-        readonly EventHandler<float> Received;
+        readonly int _id;
+        readonly string _path;
+        readonly EventHandler<float> _received;
+        readonly ManualResetEvent _mres = new(true);
 
         internal DataRef(XConnect x, int id, string path, EventHandler<float> received) =>
-            (XConnect, Id, Path, Received) = (x, id, path, received);
+            (XConnect, _id, _path, _received) = (x, id, path, received);
 
         int _RRefPerSecond;
         public int RRefPerSecond
@@ -67,16 +68,26 @@ namespace FlyByWireless.XConnect
             {
                 if (_RRefPerSecond != value)
                 {
+                    _mres.Set();
                     _ = Task.Run(async () =>
                     {
                         var a = ArrayPool<byte>.Shared.Rent(413);
                         try
                         {
-                            _ = Encoding.UTF8.GetBytes("RREF\0\0\0\0\0\0\0\0\0" + Path + '\0', a.AsSpan(0, 413));
+                            _ = Encoding.UTF8.GetBytes("RREF\0\0\0\0\0\0\0\0\0" + _path + '\0', a.AsSpan(0, 413));
                             var written = BitConverter.TryWriteBytes(a.AsSpan(5), value) &&
-                                BitConverter.TryWriteBytes(a.AsSpan(9), Id);
+                                BitConverter.TryWriteBytes(a.AsSpan(9), _id);
                             Debug.Assert(written);
-                            await XConnect.Client.SendAsync(a, 413, XConnect.RemoteEndPoint).ConfigureAwait(false);
+                            for (_mres.Reset(); ;)
+                            {
+                                var sent = await XConnect.Client.SendAsync(a, 413, XConnect.RemoteEndPoint).ConfigureAwait(false);
+                                Debug.Assert(sent == 413);
+                                if (_mres.WaitOne(1000 / value + 100))
+                                {
+                                    break;
+                                }
+                                Debug.WriteLine($"Missed RREF {_id} @ {value} Hz for {_path}");
+                            }
                             _RRefPerSecond = value;
                         }
                         finally
@@ -88,7 +99,11 @@ namespace FlyByWireless.XConnect
             }
         }
 
-        internal void Receive(float value) => Received.Invoke(this, value);
+        internal void Receive(float value)
+        {
+            _mres.Set();
+            _received.Invoke(this, value);
+        }
     }
 
     public sealed class XConnect : IDisposable
@@ -172,7 +187,7 @@ namespace FlyByWireless.XConnect
         }
 
         int _DRefId;
-        ConcurrentDictionary<int, DataRef> _DRefs = new();
+        readonly ConcurrentDictionary<int, DataRef> _DRefs = new();
 
         public event EventHandler<RPos>? RPos;
 
@@ -199,10 +214,14 @@ namespace FlyByWireless.XConnect
                             RadR?.Invoke(this, MemoryMarshal.AsRef<RadR>(buffer[5..]));
                             break;
                         case 0x46_45_52_52: // RREF
-                            var r = MemoryMarshal.AsRef<DRef>(buffer[5..]);
-                            if (_DRefs.TryGetValue(r.Id, out var d))
                             {
-                                d.Receive(r.Value);
+                                foreach (var r in MemoryMarshal.Cast<byte, DRef>(buffer[5..]))
+                                {
+                                    if (_DRefs.TryGetValue(r.Id, out var d))
+                                    {
+                                        d.Receive(r.Value);
+                                    }
+                                }
                             }
                             break;
                     }

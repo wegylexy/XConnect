@@ -5,7 +5,7 @@
     <AssemblyName>FlyByWireless.XConnect</AssemblyName>
     <RootNamespace>FlyByWireless.XConnect</RootNamespace>
     <Nullable>enable</Nullable>
-    <Version>1.0.1-alpha</Version>
+    <Version>1.0.2-alpha</Version>
     <Authors>WONG Tin Chi Timothy</Authors>
     <Company>Timmy Net Net Company</Company>
     <Product>Purely managed X-Plane UDP client</Product>

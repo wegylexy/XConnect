@@ -5,7 +5,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>FlyByWireless.XConnect.Test</AssemblyName>
     <RootNamespace>FlyByWireless.XConnect.Test</RootNamespace>
-    <Version>1.0.1-alpha</Version>
+    <Version>1.0.2-alpha</Version>
     <Authors>WONG Tin Chi Timothy</Authors>
     <Company>Timmy Net Net Company</Company>
     <Copyright>(C) 2021 WONG Tin Chi Timothy. All rights reserved.</Copyright>
