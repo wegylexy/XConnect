@@ -198,10 +198,12 @@ namespace FlyByWireless.XConnect
                         case 0x52_44_41_52: // RADR
                             RadR?.Invoke(this, MemoryMarshal.AsRef<RadR>(buffer[5..]));
                             break;
-                        case 0x46_45_52_44: // DREF
+                        case 0x46_45_52_52: // RREF
                             var r = MemoryMarshal.AsRef<DRef>(buffer[5..]);
                             if (_DRefs.TryGetValue(r.Id, out var d))
+                            {
                                 d.Receive(r.Value);
+                            }
                             break;
                     }
                 }
@@ -256,12 +258,16 @@ namespace FlyByWireless.XConnect
             return Client.SendAsync(b, b.Length);
         }
 
-        public DataRef RegisterDataRef(string path, EventHandler<float> received)
+        public DataRef RegisterDataRef(string path, EventHandler<float> received, int frequency = default)
         {
             var id = Interlocked.Increment(ref _DRefId);
             var r = new DataRef(this, id, path, received);
             var added = _DRefs.TryAdd(id, r);
             Debug.Assert(added);
+            if (frequency != default)
+            {
+                r.RRefPerSecond = frequency;
+            }
             return r;
         }
 

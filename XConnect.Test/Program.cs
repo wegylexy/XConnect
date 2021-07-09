@@ -33,6 +33,22 @@ for (; ; )
     {
         Console.WriteLine($"Moved to ({rpos.Latitude}, {rpos.Longitude})");
     };
+    {
+        var m = 0f;
+        x.RegisterDataRef("sim/cockpit2/radios/actuators/audio_com_selection_man", (_, c) =>
+        {
+            if (m != c)
+            {
+                m = c;
+                Console.WriteLine(@$"Selected COM {c switch
+                {
+                    6 => 1,
+                    7 => 2,
+                    _ => default
+                }}");
+            }
+        }, 5);
+    }
     //await x.AlertAsync("Test");
     await tcs.Task;
 }
